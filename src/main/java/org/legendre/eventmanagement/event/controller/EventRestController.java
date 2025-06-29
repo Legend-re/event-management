@@ -5,6 +5,7 @@ import org.legendre.eventmanagement.event.EventService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.legendre.eventmanagement.api.APIs.*;
 
@@ -18,15 +19,23 @@ public class EventRestController {
         this.eventService = eventService;
     }
 
-//CRUD
-//    @PostMapping
-//    @GetMapping
-//    @PatchMapping
-//    @PutMapping
-//    @DeleteMapping
-
-    @PostMapping(CREATE_EVENT_PATH)
+    @PostMapping(CREATE_PATH)
     private Event createEvent(@RequestBody Event request) {
         return eventService.createEvent(request);
+    }
+
+    @GetMapping(GET_BY_NAME_PATH_VARIABLE)
+    private Optional<Event> getEvent(@PathVariable String name) {
+        return eventService.getEventByName(name);
+    }
+
+    @GetMapping
+    private List<Event> getEvent() {
+        return eventService.getAll();
+    }
+
+    @PutMapping(UPDATE_PATH)
+    private Event updateEvent(@RequestBody Event request, @RequestParam String name) {
+        return eventService.updateEvent(request, name);
     }
 }
