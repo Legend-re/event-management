@@ -2,8 +2,6 @@ package org.legendre.eventmanagement.event.controller;
 
 import org.legendre.eventmanagement.event.Event;
 import org.legendre.eventmanagement.event.EventService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,8 +24,8 @@ public class EventRestController {
         return eventService.createEvent(request);
     }
 
-    @GetMapping(GET_BY_NAME_PATH_VARIABLE)
-    private Optional<Event> getEvent(@PathVariable String name) {
+    @GetMapping(GET_PATH)
+    private Optional<Event> getEvent(@PathVariable(GET_BY_NAME_PATH_VARIABLE) String name) {
         return eventService.getEventByName(name);
     }
 
@@ -42,7 +40,7 @@ public class EventRestController {
     }
 
     @DeleteMapping(DELETE_PATH)
-    private Event deleteEvent(@PathVariable String name) {
+    private Optional<Event> deleteEvent(@PathVariable(GET_BY_NAME_PATH_VARIABLE) String name) {
         return eventService.deleteEvent(name);
 
     }
