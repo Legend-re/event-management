@@ -12,7 +12,7 @@ public interface APIs {
     //paths
     String CREATE_PATH = "/create";
     String UPDATE_PATH = "/update";
-    String DELETE_PATH = "/delete";
+    String DELETE_PATH = "/{name}";
 
     //path variables
     String GET_BY_NAME_PATH_VARIABLE = "/{name}";

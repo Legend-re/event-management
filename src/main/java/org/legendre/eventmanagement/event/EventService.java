@@ -83,4 +83,17 @@ public class EventService {
 
         return eventToUpdate;
     }
+
+    public Event deleteEvent(String name) {
+        Optional<Event> eventToDelete = getEventByName(name);
+
+        if (eventToDelete.isPresent()) {
+            events.remove(eventToDelete.get());
+            System.out.println("Deleted event: " + name);
+            return eventToDelete.get();
+        } else {
+            System.err.println("No event found with name: " + name);
+            return null;
+        }
+    }
 }

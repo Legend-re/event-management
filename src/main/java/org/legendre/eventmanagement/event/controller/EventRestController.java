@@ -2,6 +2,8 @@ package org.legendre.eventmanagement.event.controller;
 
 import org.legendre.eventmanagement.event.Event;
 import org.legendre.eventmanagement.event.EventService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,4 +40,11 @@ public class EventRestController {
     private Event updateEvent(@RequestBody Event request, @RequestParam String name) {
         return eventService.updateEvent(request, name);
     }
+
+    @DeleteMapping(DELETE_PATH)
+    private Event deleteEvent(@PathVariable String name) {
+        return eventService.deleteEvent(name);
+
+    }
+
 }
