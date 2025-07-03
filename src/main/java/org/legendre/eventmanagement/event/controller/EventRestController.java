@@ -24,8 +24,8 @@ public class EventRestController {
         return eventService.createEvent(request);
     }
 
-    @GetMapping(GET_BY_NAME_PATH_VARIABLE)
-    private Optional<Event> getEvent(@PathVariable String name) {
+    @GetMapping(GET_PATH)
+    private Optional<Event> getEvent(@PathVariable(GET_BY_NAME_PATH_VARIABLE) String name) {
         return eventService.getEventByName(name);
     }
 
@@ -38,4 +38,11 @@ public class EventRestController {
     private Event updateEvent(@RequestBody Event request, @RequestParam String name) {
         return eventService.updateEvent(request, name);
     }
+
+    @DeleteMapping(DELETE_PATH)
+    private Optional<Event> deleteEvent(@PathVariable(GET_BY_NAME_PATH_VARIABLE) String name) {
+        return eventService.deleteEvent(name);
+
+    }
+
 }

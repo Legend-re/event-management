@@ -43,7 +43,7 @@ public class EventService {
                 .filter(event -> event.getName().equalsIgnoreCase(name))
                 .findFirst();
         foundEvent.ifPresentOrElse((
-                event -> System.out.println("Found event: " + name)),
+                        event -> System.out.println("Found event: " + name)),
                 () -> System.err.println("No event found with name: " + name));
 
         return foundEvent;
@@ -67,7 +67,8 @@ public class EventService {
         }
         System.err.println("No event found with name: " + name);
         return Optional.empty();
-*/    }
+*/
+    }
 
     public List<Event> getAll() {
         return events;
@@ -82,5 +83,24 @@ public class EventService {
         eventToUpdate.setDate(request.getDate());
 
         return eventToUpdate;
+    }
+
+    public Optional<Event> deleteEvent(String name) {
+        Optional<Event> eventToDelete = getEventByName(name);
+
+        eventToDelete.ifPresentOrElse(event -> {
+                    events.remove(eventToDelete.get());
+                    System.out.println("Deleted event: " + name);
+                },
+                () -> System.err.println("No event found with name: " + name)
+        );
+
+//        if (eventToDelete.isPresent()) {
+//            events.remove(eventToDelete.get());
+//            System.out.println("Deleted event: " + name);
+//            return eventToDelete.get();
+//        } else {
+//            System.err.println("No event found with name: " + name);
+            return eventToDelete;
     }
 }
