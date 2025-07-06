@@ -17,14 +17,15 @@ public class GuestRestController {
     public GuestRestController(GuestService guestService) {
         this.guestService = guestService;
     }
+
     @PostMapping(CREATE_PATH)
-    private Guest createGuest(@RequestBody Guest request){
+    private Guest createGuest(@RequestBody Guest request) {
         return guestService.createGuest(request);
     }
 
     @GetMapping(GET_PATH)
     private Optional<Guest> getGuest(@PathVariable(GET_BY_NAME_PATH_VARIABLE) String name) {
-        return guestService.getGuestByName(name);
+        return guestService.getGuestByEmail(name);
     }
 
     @GetMapping

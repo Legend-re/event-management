@@ -12,6 +12,12 @@ public class GuestService {
     private final List<Guest> guests = new ArrayList<>();
 
     public Guest createGuest(Guest request) {
+
+        var findByEmail = getGuestByEmail(request.getEmailAddress());
+        if (findByEmail.isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+
         guests.add(request);
         return new Guest(request.getFirstName(), request.getLastName(), request.getPhoneNumber(), request.getEmailAddress());
     }
@@ -29,12 +35,12 @@ public class GuestService {
         return guests;
     }
 
-    public Optional<Guest> getGuestByName(String name) {
-        var foundGuest = guests.stream().filter(guest -> guest.getFirstName().equalsIgnoreCase(name))
+    public Optional<Guest> getGuestByEmail(String email) {
+        var foundGuest = guests.stream().filter(guest -> guest.getEmailAddress().equalsIgnoreCase(email))
                 .findFirst();
         foundGuest.ifPresentOrElse((
-                        guest -> System.out.println("Found guest: " + name)),
-                () -> System.err.println("No guest found with name: " + name));
+                        guest -> System.out.println("Found guest: " + email)),
+                () -> System.err.println("No guest found with name: " + email));
 
         return foundGuest;
     }
@@ -43,8 +49,8 @@ public class GuestService {
         return guests;
     }
 
-    public Guest updateGuest(Guest request, String name) {
-        var findGuest = getGuestByName(name);
+    public Guest updateGuest(Guest request, String email) {
+        var findGuest = getGuestByEmail(email);
 
         Guest guestToUpdate = findGuest.get();
         guestToUpdate.setFirstName(request.getFirstName());
@@ -54,14 +60,14 @@ public class GuestService {
         return guestToUpdate;
     }
 
-    public Optional<Guest> deleteGuest(String name) {
-        Optional<Guest> guestToDelete = getGuestByName(name);
+    public Optional<Guest> deleteGuest(String email) {
+        Optional<Guest> guestToDelete = getGuestByEmail(email);
 
         guestToDelete.ifPresentOrElse(guest -> {
                     guests.remove(guestToDelete.get());
-                    System.out.println("Deleted guest: " + name);
+                    System.out.println("Deleted guest: " + email);
                 },
-                () -> System.err.println("No guest found with name: " + name));
+                () -> System.err.println("No guest found with name: " + email));
         return guestToDelete;
     }
 }
