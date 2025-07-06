@@ -1,7 +1,6 @@
 package org.legendre.eventmanagement.guest;
 
 import jakarta.annotation.PostConstruct;
-import org.legendre.eventmanagement.event.Event;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,12 +10,14 @@ import java.util.Optional;
 @Service
 public class GuestService {
     private final List<Guest> guests = new ArrayList<>();
+
     public Guest createGuest(Guest request) {
         guests.add(request);
         return new Guest(request.getFirstName(), request.getLastName(), request.getPhoneNumber(), request.getEmailAddress());
     }
+
     @PostConstruct
-    public List<Guest> populateGuests(){
+    public List<Guest> populateGuests() {
         guests.add(new Guest(
                 "Maryam", "Jelili", "08082045211", "maryamjelili@gmail.com"));
 
@@ -28,7 +29,7 @@ public class GuestService {
         return guests;
     }
 
-    public Optional<Guest> getGuestByName(String name){
+    public Optional<Guest> getGuestByName(String name) {
         var foundGuest = guests.stream().filter(guest -> guest.getFirstName().equalsIgnoreCase(name))
                 .findFirst();
         foundGuest.ifPresentOrElse((
@@ -42,10 +43,10 @@ public class GuestService {
         return guests;
     }
 
-    public Guest updateGuest(Guest request, String name){
+    public Guest updateGuest(Guest request, String name) {
         var findGuest = getGuestByName(name);
 
-        Guest guestToUpdate =findGuest.get();
+        Guest guestToUpdate = findGuest.get();
         guestToUpdate.setFirstName(request.getFirstName());
         guestToUpdate.setLastName(request.getLastName());
         guestToUpdate.setPhoneNumber(request.getPhoneNumber());
@@ -53,14 +54,14 @@ public class GuestService {
         return guestToUpdate;
     }
 
-    public Optional<Guest> deleteGuest(String name){
-    Optional<Guest> guestToDelete = getGuestByName(name);
+    public Optional<Guest> deleteGuest(String name) {
+        Optional<Guest> guestToDelete = getGuestByName(name);
 
-    guestToDelete.ifPresentOrElse(guest -> {
-                guests.remove(guestToDelete.get());
-                System.out.println("Deleted guest: " + name);
-            },
-            () -> System.err.println("No guest found with name: " + name));
-    return guestToDelete;
+        guestToDelete.ifPresentOrElse(guest -> {
+                    guests.remove(guestToDelete.get());
+                    System.out.println("Deleted guest: " + name);
+                },
+                () -> System.err.println("No guest found with name: " + name));
+        return guestToDelete;
     }
 }

@@ -1,6 +1,5 @@
 package org.legendre.eventmanagement.guest.controller;
 
-import org.legendre.eventmanagement.event.Event;
 import org.legendre.eventmanagement.guest.Guest;
 import org.legendre.eventmanagement.guest.GuestService;
 import org.springframework.web.bind.annotation.*;
