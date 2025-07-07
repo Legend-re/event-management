@@ -14,6 +14,7 @@ public interface APIs {
     String UPDATE_PATH = "/update";
     String GET_PATH = "/get/{name}";
     String DELETE_PATH = "/delete/{name}";
+    String BOOK_TICKET_PATH = "/book-ticket";
 
     //path variables
     String GET_BY_NAME_PATH_VARIABLE = "name";
