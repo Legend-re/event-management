@@ -1,5 +1,6 @@
 package org.legendre.eventmanagement.ticket.controller;
 
+import org.legendre.eventmanagement.ticket.BookTicket;
 import org.legendre.eventmanagement.ticket.Ticket;
 import org.legendre.eventmanagement.ticket.TicketService;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,16 @@ public class TicketRestController {
     @GetMapping(GET_PATH)
     private Optional<Ticket> getTicket(@PathVariable(GET_BY_NAME_PATH_VARIABLE) String name) {
         return ticketService.getTicketByEventName(name);
+    }
+
+    @GetMapping(GETBYID_PATH)
+    private Optional<BookTicket> getTicketById(@PathVariable(GET_BY_ID_PATH_VARIABLE) String ticketId) {
+        return ticketService.getTicketById(ticketId);
+    }
+
+    @GetMapping(GETBYEMAIL_PATH)
+    private long getTicketsByGuest(@PathVariable(GET_BY_EMAIL_PATH_VARIABLE) String email) {
+        return ticketService.getNumberOfTicketsBookedByGuest(email);
     }
 
     @GetMapping
