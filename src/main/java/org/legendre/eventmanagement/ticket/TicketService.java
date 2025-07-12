@@ -1,6 +1,6 @@
 package org.legendre.eventmanagement.ticket;
 
-import org.legendre.eventmanagement.event.EventService;
+import org.legendre.eventmanagement.event.service.EventService;
 import org.legendre.eventmanagement.guest.GuestService;
 import org.springframework.stereotype.Service;
 
