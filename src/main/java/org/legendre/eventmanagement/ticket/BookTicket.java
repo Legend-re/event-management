@@ -1,6 +1,6 @@
 package org.legendre.eventmanagement.ticket;
 
-import org.legendre.eventmanagement.event.Event;
+import org.legendre.eventmanagement.event.model.Event;
 import org.legendre.eventmanagement.guest.Guest;
 
 public class BookTicket {
