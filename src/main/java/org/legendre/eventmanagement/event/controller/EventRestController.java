@@ -1,7 +1,9 @@
 package org.legendre.eventmanagement.event.controller;
 
-import org.legendre.eventmanagement.event.Event;
-import org.legendre.eventmanagement.event.EventService;
+import org.legendre.eventmanagement.event.model.Event;
+import org.legendre.eventmanagement.event.service.EventService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,29 +22,29 @@ public class EventRestController {
     }
 
     @PostMapping(CREATE_PATH)
-    private Event createEvent(@RequestBody Event request) {
-        return eventService.createEvent(request);
+    private ResponseEntity<Event> createEvent(@RequestBody Event request) {
+        return new ResponseEntity<>(eventService.createEvent(request), HttpStatus.CREATED);
     }
 
     @GetMapping(GET_PATH)
-    private Optional<Event> getEvent(@PathVariable(GET_BY_NAME_PATH_VARIABLE) String name) {
-        return eventService.getEventByName(name);
+    private ResponseEntity<Optional<Event>> getEvent(@PathVariable(GET_BY_NAME_PATH_VARIABLE) String name) {
+        return new ResponseEntity<>(eventService.getEventByName(name), HttpStatus.OK);
     }
 
     @GetMapping
-    private List<Event> getEvent() {
-        return eventService.getAll();
+    private ResponseEntity<List<Event>> getEvent() {
+        return new ResponseEntity<>(eventService.getAll(), HttpStatus.OK);
     }
 
     @PutMapping(UPDATE_PATH)
-    private Event updateEvent(@RequestBody Event request, @RequestParam String name) {
-        return eventService.updateEvent(request, name);
+    private ResponseEntity<Event> updateEvent(@RequestBody Event request, @RequestParam String name) {
+        return new ResponseEntity<>(eventService.updateEvent(request, name), HttpStatus.OK);
     }
 
     @DeleteMapping(DELETE_PATH)
-    private Optional<Event> deleteEvent(@PathVariable(GET_BY_NAME_PATH_VARIABLE) String name) {
-        return eventService.deleteEvent(name);
-
+    private ResponseEntity<Void> deleteEvent(@PathVariable(GET_BY_NAME_PATH_VARIABLE) String name) {
+        eventService.deleteEvent(name);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }
