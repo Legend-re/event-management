@@ -15,25 +15,25 @@ public class EventService {
 
     public Event createEvent(Event request) {
         events.add(request);
-        return new Event(request.getName(), request.getLocation(), request.getDate());
+        return new Event(request.getName(), request.getLocation(), request.getDate(), request.getHost());
     }
 
     @PostConstruct
     public List<Event> populateEvents() {
         events.add(new Event(
-                "Google Conference", "Ajah", LocalDateTime.now()));
+                "Google Conference", "Ajah", LocalDateTime.now(), "Tony Elumelu"));
 
         events.add(new Event(
-                "Amazon Conference", "Lekki", LocalDateTime.now()));
+                "Amazon Conference", "Lekki", LocalDateTime.now(), "Mark"));
 
         events.add(new Event(
-                "Microsoft Conference", "Ikeja", LocalDateTime.now()));
+                "Microsoft Conference", "Ikeja", LocalDateTime.now(), "Messi"));
 
         events.add(new Event(
-                "Netflix Conference", "VI", LocalDateTime.now()));
+                "Netflix Conference", "VI", LocalDateTime.now(), "Dangote"));
 
         events.add(new Event(
-                "Meta Conference", "Ikoyi", LocalDateTime.now()));
+                "Meta Conference", "Ikoyi", LocalDateTime.now(), "Christiano"));
 
         return events;
     }

@@ -7,14 +7,24 @@ public class Event {
     private String name;
     private String location;
     private LocalDateTime date;
+    private String host;
 
     public Event() {
     }
 
-    public Event(String name, String location, LocalDateTime date) {
+    public Event(String name, String location, LocalDateTime date, String host) {
         this.name = name;
         this.location = location;
         this.date = date;
+        this.host = host;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
     }
 
     public String getName() {
@@ -47,6 +57,7 @@ public class Event {
                 "name='" + name + '\'' +
                 ", location='" + location + '\'' +
                 ", date=" + date +
+                ", host='" + host + '\'' +
                 '}';
     }
 }

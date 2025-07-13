@@ -30,12 +30,12 @@ public class TicketRestController {
         return ticketService.getTicketByEventName(name);
     }
 
-    @GetMapping(GETBYID_PATH)
+    @GetMapping(GET_BY_ID_PATH)
     private Optional<BookTicket> getTicketById(@PathVariable(GET_BY_ID_PATH_VARIABLE) String ticketId) {
         return ticketService.getTicketById(ticketId);
     }
 
-    @GetMapping(GETBYEMAIL_PATH)
+    @GetMapping(GET_BY_EMAIL_PATH)
     private long getTicketsByGuest(@PathVariable(GET_BY_EMAIL_PATH_VARIABLE) String email) {
         return ticketService.getNumberOfTicketsBookedByGuest(email);
     }
