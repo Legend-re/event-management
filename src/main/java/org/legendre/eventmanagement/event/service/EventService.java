@@ -14,11 +14,10 @@ import java.util.Optional;
 public class EventService {
 
     private final EventRepository eventRepository;
-    private final List<Event> events = new ArrayList<>();
 
     public Event createEvent(Event request) {
         return eventRepository.save(
-                new Event(request.getId(), request.getName(), request.getLocation(), request.getDate()));
+                new Event(request.getId(), request.getName(), request.getLocation(), request.getDate(), request.getHost()));
     }
 
     public Optional<Event> getEventByName(String name) {
@@ -36,6 +35,7 @@ public class EventService {
         findEvent.setName(request.getName());
         findEvent.setLocation(request.getLocation());
         findEvent.setDate(request.getDate());
+        findEvent.setHost(request.getHost());
 
         return findEvent;
     }
