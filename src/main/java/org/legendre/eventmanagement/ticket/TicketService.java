@@ -45,9 +45,30 @@ public class TicketService {
         return foundTicket;
     }
 
+    public Optional<BookTicket> getTicketById(String ticketId) {
+        var foundTicket = bookedTickets.stream()
+                .filter(ticket -> ticket.getTicketId().equalsIgnoreCase(ticketId))
+                .findFirst();
+
+        foundTicket.ifPresentOrElse(
+                ticket -> System.out.println("Found ticket with ID: " + ticketId),
+                () -> System.err.println("No ticket found with ID: " + ticketId)
+        );
+
+        return foundTicket;
+    }
+
+
     public List<Ticket> getAll() {
         return tickets;
     }
+
+    public long getNumberOfTicketsBookedByGuest(String guestEmail) {
+        return bookedTickets.stream()
+                .filter(ticket -> ticket.getGuest().getEmailAddress().equalsIgnoreCase(guestEmail))
+                .count();
+    }
+
 
     public Ticket updateTicket(Ticket request, String name) {
         var findTicket = getTicketByEventName(name);

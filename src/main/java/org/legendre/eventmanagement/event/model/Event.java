@@ -19,4 +19,5 @@ public class Event {
     private String name;
     private String location;
     private LocalDateTime date;
+    private String host;
 }
