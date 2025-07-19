@@ -1,20 +1,27 @@
-package org.legendre.eventmanagement.ticket;
+package org.legendre.eventmanagement.ticket.service;
 
+import lombok.RequiredArgsConstructor;
 import org.legendre.eventmanagement.event.service.EventService;
-import org.legendre.eventmanagement.guest.GuestService;
+import org.legendre.eventmanagement.guest.service.GuestService;
+import org.legendre.eventmanagement.ticket.TicketStatus;
+import org.legendre.eventmanagement.ticket.model.BookTicket;
+import org.legendre.eventmanagement.ticket.model.BookTicketRequest;
+import org.legendre.eventmanagement.ticket.model.Ticket;
+import org.legendre.eventmanagement.ticket.model.repository.BookTicketRepository;
+import org.legendre.eventmanagement.ticket.model.repository.TicketRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
 @Service
+@RequiredArgsConstructor
 public class TicketService {
 
-    private final List<Ticket> tickets = new ArrayList<>();
+    private final TicketRepository ticketRepository;
 
-    private final List<BookTicket> bookedTickets = new ArrayList<>();
+    private final BookTicketRepository bookTicketRepository;
 
     private final EventService event;
 
@@ -22,71 +29,39 @@ public class TicketService {
 
     private static final String PREFIX = "TI";
 
-    public TicketService(EventService event, GuestService guest) {
-        this.event = event;
-        this.guest = guest;
-    }
 
     public Ticket createTicket(Ticket request) {
-        var findEventIfExists = event.getEventByName(request.getEventName()).orElse(null);
-
-        assert findEventIfExists != null;
-        var newTicket = new Ticket(request.getTotalTickets(), 0, request.getTotalTickets(), findEventIfExists.getName());
-        tickets.add(newTicket);
-        return newTicket;
+        return ticketRepository.save(new Ticket(request.getId(),request.getTotalTickets(), 0, request.getTotalTickets(), request.getTicketsLeft(), request.getEventName()));
     }
 
     public Optional<Ticket> getTicketByEventName(String name) {
-        var foundTicket = tickets.stream().filter(ticket -> ticket.getEventName().equalsIgnoreCase(name))
-                .findFirst();
-        foundTicket.ifPresentOrElse((
-                        ticket -> System.out.println("Found ticket: " + name)),
-                () -> System.err.println("No ticket found with name: " + name));
-        return foundTicket;
+        return ticketRepository.findByEventName(name);
     }
 
     public Optional<BookTicket> getTicketById(String ticketId) {
-        var foundTicket = bookedTickets.stream()
-                .filter(ticket -> ticket.getTicketId().equalsIgnoreCase(ticketId))
-                .findFirst();
-
-        foundTicket.ifPresentOrElse(
-                ticket -> System.out.println("Found ticket with ID: " + ticketId),
-                () -> System.err.println("No ticket found with ID: " + ticketId)
-        );
-
-        return foundTicket;
+        return bookTicketRepository.findById(ticketId);
     }
-
 
     public List<Ticket> getAll() {
-        return tickets;
+        return ticketRepository.findAll();
     }
 
-    public long getNumberOfTicketsBookedByGuest(String guestEmail) {
-        return bookedTickets.stream()
-                .filter(ticket -> ticket.getGuest().getEmailAddress().equalsIgnoreCase(guestEmail))
-                .count();
+    public Optional<BookTicket> getNumberOfTicketsBookedByGuest(String guestEmail) {
+        return bookTicketRepository.findByEmailAddress(guestEmail);
     }
 
 
     public Ticket updateTicket(Ticket request, String name) {
-        var findTicket = getTicketByEventName(name);
+        var findTicket = ticketRepository.findByEventName(name).orElse(null);
 
-        Ticket ticketToUpdate = findTicket.get();
-        ticketToUpdate.setEventName(request.getEventName());
-        ticketToUpdate.setTotalTickets(request.getTotalTickets());
-        return ticketToUpdate;
+        assert findTicket != null;
+        findTicket.setEventName(request.getEventName());
+        findTicket.setTotalTickets(request.getTotalTickets());
+        return findTicket;
     }
 
-    public Optional<Ticket> deleteTicket(String name) {
-        var ticketToDelete = getTicketByEventName(name);
-
-        ticketToDelete.ifPresentOrElse(host -> {
-            tickets.remove(ticketToDelete.get());
-            System.out.println("Deleted ticket: " + name);
-        }, () -> System.err.println("No ticket found for required event: " + name));
-        return ticketToDelete;
+    public void deleteTicket(String name) {
+        ticketRepository.findByEventName(name).ifPresent(ticketRepository::delete);
     }
 
     //Booking Tickets starts here

@@ -1,8 +1,8 @@
 package org.legendre.eventmanagement.ticket.controller;
 
-import org.legendre.eventmanagement.ticket.BookTicket;
-import org.legendre.eventmanagement.ticket.Ticket;
-import org.legendre.eventmanagement.ticket.TicketService;
+import org.legendre.eventmanagement.ticket.model.BookTicket;
+import org.legendre.eventmanagement.ticket.model.Ticket;
+import org.legendre.eventmanagement.ticket.service.TicketService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

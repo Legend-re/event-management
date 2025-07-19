@@ -1,7 +1,9 @@
 package org.legendre.eventmanagement.guest.controller;
 
-import org.legendre.eventmanagement.guest.Guest;
-import org.legendre.eventmanagement.guest.GuestService;
+import org.legendre.eventmanagement.guest.model.Guest;
+import org.legendre.eventmanagement.guest.service.GuestService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,29 +21,29 @@ public class GuestRestController {
     }
 
     @PostMapping(CREATE_PATH)
-    private Guest createGuest(@RequestBody Guest request) {
-        return guestService.createGuest(request);
+    private ResponseEntity<Guest> createGuest(@RequestBody Guest request) {
+        return new ResponseEntity<>(guestService.createGuest(request), HttpStatus.CREATED);
     }
 
     @GetMapping(GET_PATH)
-    private Optional<Guest> getGuest(@PathVariable(GET_BY_NAME_PATH_VARIABLE) String name) {
-        return guestService.getGuestByEmail(name);
+    private ResponseEntity<Optional<Guest>> getGuest(@PathVariable(GET_BY_NAME_PATH_VARIABLE) String email) {
+        return new ResponseEntity<>(guestService.getGuestByEmail(email), HttpStatus.OK);
     }
 
     @GetMapping
-    private List<Guest> getGuest() {
-        return guestService.getAll();
+    private ResponseEntity<List<Guest>> getGuest() {
+        return new ResponseEntity<>(guestService.getAll(), HttpStatus.OK);
     }
 
     @PutMapping(UPDATE_PATH)
-    private Guest updateGuest(@RequestBody Guest request, @RequestParam String name) {
-        return guestService.updateGuest(request, name);
+    private ResponseEntity<Guest> updateGuest(@RequestBody Guest request, @RequestParam String name) {
+        return new ResponseEntity<>(guestService.updateGuest(request, name), HttpStatus.OK);
     }
 
     @DeleteMapping(DELETE_PATH)
-    private Optional<Guest> deleteGuest(@PathVariable(GET_BY_NAME_PATH_VARIABLE) String name) {
-        return guestService.deleteGuest(name);
-
+    private ResponseEntity<Void> deleteGuest(@PathVariable(GET_BY_NAME_PATH_VARIABLE) String name) {
+        guestService.deleteGuest(name);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

@@ -36,7 +36,6 @@ public class EventService {
         findEvent.setLocation(request.getLocation());
         findEvent.setDate(request.getDate());
         findEvent.setHost(request.getHost());
-
         return findEvent;
     }
 
