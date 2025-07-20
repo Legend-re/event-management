@@ -1,24 +1,22 @@
-package org.legendre.eventmanagement.event.model;
+package org.legendre.eventmanagement.host.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Table
 @Entity
 @Getter
 @Setter
-@Builder(toBuilder = true)
 @ToString
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Event {
+public class Host {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String location;
-    private LocalDateTime date;
-    private String host;
+    private String email;
+    private String bio;
+
 }

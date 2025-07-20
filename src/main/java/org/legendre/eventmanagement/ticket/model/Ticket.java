@@ -1,9 +1,7 @@
-package org.legendre.eventmanagement.event.model;
+package org.legendre.eventmanagement.ticket.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Table
 @Entity
@@ -13,12 +11,13 @@ import java.time.LocalDateTime;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Event {
+public class Ticket {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String location;
-    private LocalDateTime date;
-    private String host;
+    private int totalTickets;
+    private int totalTicketsSold;
+    private int ticketsLeft;
+    private String eventName;
 }
