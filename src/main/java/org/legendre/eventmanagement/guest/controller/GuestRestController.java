@@ -1,6 +1,8 @@
 package org.legendre.eventmanagement.guest.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.legendre.eventmanagement.guest.model.Guest;
+import org.legendre.eventmanagement.guest.model.GuestRequest;
 import org.legendre.eventmanagement.guest.service.GuestService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,16 +14,14 @@ import java.util.Optional;
 import static org.legendre.eventmanagement.api.APIs.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(GUEST_URL)
 public class GuestRestController {
+
     private final GuestService guestService;
 
-    public GuestRestController(GuestService guestService) {
-        this.guestService = guestService;
-    }
-
     @PostMapping(CREATE_PATH)
-    private ResponseEntity<Guest> createGuest(@RequestBody Guest request) {
+    private ResponseEntity<Guest> createGuest(@RequestBody GuestRequest request) {
         return new ResponseEntity<>(guestService.createGuest(request), HttpStatus.CREATED);
     }
 
@@ -36,8 +36,8 @@ public class GuestRestController {
     }
 
     @PutMapping(UPDATE_PATH)
-    private ResponseEntity<Guest> updateGuest(@RequestBody Guest request, @RequestParam String name) {
-        return new ResponseEntity<>(guestService.updateGuest(request, name), HttpStatus.OK);
+    private ResponseEntity<Guest> updateGuest(@RequestBody GuestRequest request, @RequestParam String email) {
+        return new ResponseEntity<>(guestService.updateGuest(request, email), HttpStatus.OK);
     }
 
     @DeleteMapping(DELETE_PATH)

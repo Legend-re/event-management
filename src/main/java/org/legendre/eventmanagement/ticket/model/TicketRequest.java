@@ -1,9 +1,9 @@
 package org.legendre.eventmanagement.ticket.model;
 
-import lombok.Data;
+import lombok.*;
 
 @Data
-public class BookTicketRequest {
-    private String guestEmail;
+public class TicketRequest {
+    private int totalTickets;
     private String eventName;
 }

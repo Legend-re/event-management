@@ -8,6 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class Host {

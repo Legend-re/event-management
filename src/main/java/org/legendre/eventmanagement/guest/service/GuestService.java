@@ -2,6 +2,7 @@ package org.legendre.eventmanagement.guest.service;
 
 import lombok.RequiredArgsConstructor;
 import org.legendre.eventmanagement.guest.model.Guest;
+import org.legendre.eventmanagement.guest.model.GuestRequest;
 import org.legendre.eventmanagement.guest.model.repository.GuestRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,33 +14,49 @@ import java.util.Optional;
 public class GuestService {
     private final GuestRepository guestRepository;
 
-    public Guest createGuest(Guest request) {
+    public Guest createGuest(GuestRequest request) {
+        guestRepository.findByEmailAddress(request.getEmailAddress())
+                .ifPresent(guest -> {
+                    throw new IllegalArgumentException("Email address already in use");
+                });
 
         return guestRepository.save(
-                new Guest(request.getId(), request.getFirstName(), request.getLastName(), request.getPhoneNumber(), request.getEmailAddress()));
+                Guest.builder()
+                        .firstName(request.getFirstName())
+                        .lastName(request.getLastName())
+                        .emailAddress(request.getEmailAddress())
+                        .phoneNumber(request.getPhoneNumber()).build());
     }
 
-
     public Optional<Guest> getGuestByEmail(String email) {
-        return guestRepository.findByEmailAddress(email);
+        return Optional.ofNullable(guestRepository.findByEmailAddress(email)
+                .orElseThrow(() -> new IllegalArgumentException("Guest with queried email not found")));
     }
 
     public List<Guest> getAll() {
         return guestRepository.findAll();
     }
 
-    public Guest updateGuest(Guest request, String email) {
-        var findGuest = guestRepository.findByEmailAddress(email).orElse(null);
+    public Guest updateGuest(GuestRequest request, String email) {
+        var findGuest = guestRepository.findByEmailAddress(email).orElseThrow(
+                () -> new IllegalArgumentException("Email address not found")
+        );
+
+        guestRepository.findByEmailAddress(request.getEmailAddress())
+                .ifPresent(guest -> {
+                    throw new IllegalArgumentException("Email address not found");
+                });
 
         assert findGuest != null;
-        findGuest.setFirstName(request.getFirstName());
-        findGuest.setLastName(request.getLastName());
-        findGuest.setPhoneNumber(request.getPhoneNumber());
-        findGuest.setEmailAddress(request.getEmailAddress());
-        return findGuest;
+        return guestRepository.save(
+                findGuest.toBuilder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .emailAddress(request.getEmailAddress())
+                .phoneNumber(request.getPhoneNumber()).build());
     }
 
-    public void deleteGuest(String email){
+    public void deleteGuest(String email) {
         guestRepository.findByEmailAddress(email).ifPresent(guestRepository::delete);
     }
 }

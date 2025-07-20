@@ -1,6 +1,8 @@
 package org.legendre.eventmanagement.host.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.legendre.eventmanagement.host.model.Host;
+import org.legendre.eventmanagement.host.model.HostRequest;
 import org.legendre.eventmanagement.host.service.HostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,16 +14,14 @@ import java.util.Optional;
 import static org.legendre.eventmanagement.api.APIs.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(HOST_URL)
 public class HostRestController {
+
     private final HostService hostService;
 
-    public HostRestController(HostService hostService) {
-        this.hostService = hostService;
-    }
-
     @PostMapping(CREATE_PATH)
-    private ResponseEntity<Host> createHost(@RequestBody Host request){
+    private ResponseEntity<Host> createHost(@RequestBody HostRequest request) {
         return new ResponseEntity<>(hostService.createHost(request), HttpStatus.OK);
     }
 
@@ -36,15 +36,13 @@ public class HostRestController {
     }
 
     @PutMapping(UPDATE_PATH)
-    private ResponseEntity<Host> updateHost(@RequestBody Host request, @RequestParam String name) {
-        return new ResponseEntity<>(hostService.updateHost(request, name), HttpStatus.OK);
+    private ResponseEntity<Host> updateHost(@RequestBody HostRequest request, @RequestParam String email) {
+        return new ResponseEntity<>(hostService.updateHost(request, email), HttpStatus.OK);
     }
 
     @DeleteMapping(DELETE_PATH)
     private ResponseEntity<Void> deleteHost(@PathVariable(GET_BY_NAME_PATH_VARIABLE) String name) {
         hostService.deleteHost(name);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
     }
-
 }

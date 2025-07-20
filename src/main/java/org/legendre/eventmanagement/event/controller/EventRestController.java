@@ -1,6 +1,8 @@
 package org.legendre.eventmanagement.event.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.legendre.eventmanagement.event.model.Event;
+import org.legendre.eventmanagement.event.model.EventRequest;
 import org.legendre.eventmanagement.event.service.EventService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,17 +14,14 @@ import java.util.Optional;
 import static org.legendre.eventmanagement.api.APIs.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(EVENT_URL)
 public class EventRestController {
 
     private final EventService eventService;
 
-    public EventRestController(EventService eventService) {
-        this.eventService = eventService;
-    }
-
     @PostMapping(CREATE_PATH)
-    private ResponseEntity<Event> createEvent(@RequestBody Event request) {
+    private ResponseEntity<Event> createEvent(@RequestBody EventRequest request) {
         return new ResponseEntity<>(eventService.createEvent(request), HttpStatus.CREATED);
     }
 
@@ -37,7 +36,7 @@ public class EventRestController {
     }
 
     @PutMapping(UPDATE_PATH)
-    private ResponseEntity<Event> updateEvent(@RequestBody Event request, @RequestParam String name) {
+    private ResponseEntity<Event> updateEvent(@RequestBody EventRequest request, @RequestParam String name) {
         return new ResponseEntity<>(eventService.updateEvent(request, name), HttpStatus.OK);
     }
 
@@ -46,5 +45,4 @@ public class EventRestController {
         eventService.deleteEvent(name);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }
