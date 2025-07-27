@@ -18,25 +18,25 @@ import static org.legendre.eventmanagement.api.APIs.*;
 @RequestMapping(BOOK_TICKET_URL)
 public class BookTicketRestController {
 
-    private final BookTicketService ticketService;
+    private final BookTicketService bookTicketService;
 
     @PostMapping(CREATE_PATH)
     private ResponseEntity<BookTicket> bookTicket(@RequestBody BookTicketRequest request) {
-        return new ResponseEntity<>(ticketService.bookTicket(request), HttpStatus.OK);
+        return new ResponseEntity<>(bookTicketService.bookTicket(request), HttpStatus.OK);
     }
 
     @GetMapping
     private ResponseEntity<List<BookTicket>> getAll() {
-        return new ResponseEntity<>(ticketService.getAllBookedTickets(), HttpStatus.OK);
+        return new ResponseEntity<>(bookTicketService.getAllBookedTickets(), HttpStatus.OK);
     }
 
     @GetMapping(GET_BY_ID_PATH)
     private ResponseEntity<Optional<BookTicket>> getByTicketId(@PathVariable(GET_BY_ID_PATH_VARIABLE) String ticketId) {
-        return new ResponseEntity<>(ticketService.getTicketByTicketId(ticketId), HttpStatus.OK);
+        return new ResponseEntity<>(bookTicketService.getTicketByTicketId(ticketId), HttpStatus.OK);
     }
 
     @GetMapping(GET_EMAIL_PATH)
     private ResponseEntity<List<BookTicket>> getTicketsByGuest(@PathVariable(GET_BY_EMAIL_PATH_VARIABLE) String email) {
-        return new ResponseEntity<>(ticketService.getTicketsBookedByGuest(email), HttpStatus.OK);
+        return new ResponseEntity<>(bookTicketService.getTicketsBookedByGuest(email), HttpStatus.OK);
     }
 }
