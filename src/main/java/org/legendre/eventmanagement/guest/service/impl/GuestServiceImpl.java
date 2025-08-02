@@ -2,7 +2,7 @@ package org.legendre.eventmanagement.guest.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.legendre.eventmanagement.exception.DuplicateRecordException;
-import org.legendre.eventmanagement.exception.ErrorMessages;
+import org.legendre.eventmanagement.exception.ErrorCode;
 import org.legendre.eventmanagement.exception.ErrorResponse;
 import org.legendre.eventmanagement.exception.RecordNotFoundException;
 import org.legendre.eventmanagement.guest.model.Guest;
@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static org.legendre.eventmanagement.exception.ErrorMessages.GUEST_ALREADY_EXIST;
+import static org.legendre.eventmanagement.exception.ErrorMessages.GUEST_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 public class GuestServiceImpl implements GuestService {
@@ -24,7 +27,7 @@ public class GuestServiceImpl implements GuestService {
         guestRepository.findByEmailAddress(request.getEmailAddress())
                 .ifPresent(guest -> {
                     throw new DuplicateRecordException(
-                            new ErrorResponse(ErrorMessages.GUEST_ALREADY_EXIST));
+                            new ErrorResponse(GUEST_ALREADY_EXIST.getMessage(), ErrorCode.RSC02));
                 });
 
         return guestRepository.save(
@@ -39,7 +42,7 @@ public class GuestServiceImpl implements GuestService {
     public Optional<Guest> getGuestByEmail(String email) {
         return Optional.ofNullable(guestRepository.findByEmailAddress(email)
                 .orElseThrow(() -> new RecordNotFoundException(
-                        new ErrorResponse(ErrorMessages.GUEST_NOT_FOUND))));
+                        new ErrorResponse(GUEST_NOT_FOUND.getMessage(), ErrorCode.RSC01))));
     }
 
     @Override
@@ -51,13 +54,13 @@ public class GuestServiceImpl implements GuestService {
     public Guest updateGuest(GuestRequest request, String email) {
         var findGuest = guestRepository.findByEmailAddress(email).
                 orElseThrow(() -> new RecordNotFoundException(
-                        new ErrorResponse(ErrorMessages.GUEST_NOT_FOUND))
+                        new ErrorResponse(GUEST_NOT_FOUND.getMessage(), ErrorCode.RSC01))
                 );
 
         guestRepository.findByEmailAddress(request.getEmailAddress())
                 .ifPresent(guest -> {
                     throw new DuplicateRecordException(
-                            new ErrorResponse(ErrorMessages.GUEST_ALREADY_EXIST));
+                            new ErrorResponse(GUEST_ALREADY_EXIST.getMessage(), ErrorCode.RSC02));
                 });
 
         assert findGuest != null;

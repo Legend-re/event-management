@@ -2,7 +2,7 @@ package org.legendre.eventmanagement.ticket.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.legendre.eventmanagement.event.service.EventService;
-import org.legendre.eventmanagement.exception.ErrorMessages;
+import org.legendre.eventmanagement.exception.ErrorCode;
 import org.legendre.eventmanagement.exception.ErrorResponse;
 import org.legendre.eventmanagement.exception.RecordNotFoundException;
 import org.legendre.eventmanagement.guest.service.GuestService;
@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+
+import static org.legendre.eventmanagement.exception.ErrorMessages.*;
 
 @Service
 @RequiredArgsConstructor
@@ -47,23 +49,23 @@ public class BookTicketServiceImpl implements BookTicketService {
 
         var findGuest = guestService.getGuestByEmail(request.getGuestEmail())
                 .orElseThrow(() -> new RecordNotFoundException(
-                        new ErrorResponse(ErrorMessages.GUEST_NOT_FOUND))
+                        new ErrorResponse(GUEST_NOT_FOUND.getMessage(), ErrorCode.RSC01))
                 );
 
         var findTicketByEventName = ticketService.getTicketByEventName(request.getEventName())
                 .orElseThrow(() -> new RecordNotFoundException(
-                                new ErrorResponse(ErrorMessages.TICKET_NOT_FOUND)
+                                new ErrorResponse(TICKET_NOT_FOUND.getMessage(), ErrorCode.RSC01)
                         )
                 );
 
         if (findTicketByEventName.getTicketsLeft() == 0)
             throw new RecordNotFoundException(
-                    new ErrorResponse(ErrorMessages.TICKET_SOLD_OUT)
+                    new ErrorResponse(TICKET_SOLD_OUT.getMessage(), ErrorCode.RSC01)
             );
 
         var findEvent = eventService.getEventByName(request.getEventName())
                 .orElseThrow(() -> new RecordNotFoundException(
-                        new ErrorResponse(ErrorMessages.EVENT_NOT_FOUND)));
+                        new ErrorResponse(EVENT_NOT_FOUND.getMessage(), ErrorCode.RSC01)));
 
         findTicketByEventName.setTotalTicketsSold(findTicketByEventName.getTotalTicketsSold() + 1);
         findTicketByEventName.setTicketsLeft(findTicketByEventName.getTicketsLeft() - 1);
@@ -85,7 +87,7 @@ public class BookTicketServiceImpl implements BookTicketService {
     public List<BookTicket> getTicketsBookedByGuest(String guestEmail) {
         var findGuest = guestService.getGuestByEmail(guestEmail)
                 .orElseThrow(() -> new RecordNotFoundException(
-                        new ErrorResponse(ErrorMessages.GUEST_NOT_FOUND)
+                        new ErrorResponse(GUEST_NOT_FOUND.getMessage(), ErrorCode.RSC01)
                 ));
 
         return bookTicketRepository.findByGuest(findGuest);

@@ -2,7 +2,7 @@ package org.legendre.eventmanagement.ticket.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.legendre.eventmanagement.event.service.impl.EventServiceImpl;
-import org.legendre.eventmanagement.exception.ErrorMessages;
+import org.legendre.eventmanagement.exception.ErrorCode;
 import org.legendre.eventmanagement.exception.ErrorResponse;
 import org.legendre.eventmanagement.exception.RecordNotFoundException;
 import org.legendre.eventmanagement.ticket.model.Ticket;
@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static org.legendre.eventmanagement.exception.ErrorMessages.EVENT_NOT_FOUND;
+import static org.legendre.eventmanagement.exception.ErrorMessages.TICKET_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +29,7 @@ public class TicketServiceImpl implements TicketService {
     public Ticket createTicket(TicketRequest request) {
         var findEvent = eventService.getEventByName(request.getEventName())
                 .orElseThrow(() -> new RecordNotFoundException(
-                        new ErrorResponse(ErrorMessages.EVENT_NOT_FOUND)
+                        new ErrorResponse(EVENT_NOT_FOUND.getMessage(), ErrorCode.RSC01)
                 ));
 
         return ticketRepository.save(Ticket.builder()
@@ -40,7 +43,7 @@ public class TicketServiceImpl implements TicketService {
     public Optional<Ticket> getTicketByEventName(String name) {
         return Optional.ofNullable(ticketRepository.findByEventName(name)
                 .orElseThrow(() -> new RecordNotFoundException(
-                        new ErrorResponse(ErrorMessages.TICKET_NOT_FOUND)
+                        new ErrorResponse(TICKET_NOT_FOUND.getMessage(), ErrorCode.RSC01)
                 ))
         );
     }
@@ -54,7 +57,7 @@ public class TicketServiceImpl implements TicketService {
     public Ticket updateTicket(TicketRequest request) {
         var findTicket = ticketRepository.findByEventName(request.getEventName())
                 .orElseThrow(() -> new RecordNotFoundException(
-                        new ErrorResponse(ErrorMessages.TICKET_NOT_FOUND))
+                        new ErrorResponse(TICKET_NOT_FOUND.getMessage(), ErrorCode.RSC01))
                 );
 
         findTicket.setEventName(request.getEventName());
