@@ -1,6 +1,7 @@
 package org.legendre.eventmanagement.ticket.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.legendre.eventmanagement.event.service.EventService;
 import org.legendre.eventmanagement.exception.ErrorCode;
 import org.legendre.eventmanagement.exception.ErrorResponse;
@@ -19,7 +20,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import static org.legendre.eventmanagement.exception.ErrorMessages.*;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookTicketServiceImpl implements BookTicketService {
@@ -45,17 +46,20 @@ public class BookTicketServiceImpl implements BookTicketService {
 
     @Override
     public BookTicket bookTicket(BookTicketRequest request) {
+        log.info("Booking ticket: {}", request.getGuestEmail());
         var ticketId = generateTicketId();
 
         var findGuest = guestService.getGuestByEmail(request.getGuestEmail())
-                .orElseThrow(() -> new RecordNotFoundException(
-                        new ErrorResponse(GUEST_NOT_FOUND.getMessage(), ErrorCode.RSC01))
+                .orElseThrow(() -> {log.error("Guest not found: {}", request.getGuestEmail());
+                        return new RecordNotFoundException(
+                        new ErrorResponse(GUEST_NOT_FOUND.getMessage(), ErrorCode.RSC01));}
                 );
 
         var findTicketByEventName = ticketService.getTicketByEventName(request.getEventName())
-                .orElseThrow(() -> new RecordNotFoundException(
+                .orElseThrow(() -> {log.error("Ticket not found: {}", request.getEventName());
+                        return new RecordNotFoundException(
                                 new ErrorResponse(TICKET_NOT_FOUND.getMessage(), ErrorCode.RSC01)
-                        )
+                        );}
                 );
 
         if (findTicketByEventName.getTicketsLeft() == 0)
@@ -64,37 +68,44 @@ public class BookTicketServiceImpl implements BookTicketService {
             );
 
         var findEvent = eventService.getEventByName(request.getEventName())
-                .orElseThrow(() -> new RecordNotFoundException(
-                        new ErrorResponse(EVENT_NOT_FOUND.getMessage(), ErrorCode.RSC01)));
+                .orElseThrow(() -> {log.error("Event not found: {}", request.getEventName());
+                        return new RecordNotFoundException(
+                        new ErrorResponse(EVENT_NOT_FOUND.getMessage(), ErrorCode.RSC01));});
 
         findTicketByEventName.setTotalTicketsSold(findTicketByEventName.getTotalTicketsSold() + 1);
         findTicketByEventName.setTicketsLeft(findTicketByEventName.getTicketsLeft() - 1);
 
-        return bookTicketRepository.save(
+        var bookedTicket = bookTicketRepository.save(
                 BookTicket.builder()
                         .ticketId(ticketId)
                         .ticketStatus(TicketStatus.SUCCESS)
                         .guest(findGuest)
                         .event(findEvent).build());
+        log.info("Ticket booked successfully: {}", bookedTicket.getTicketId());
+        return bookedTicket;
     }
 
     @Override
     public List<BookTicket> getAllBookedTickets() {
+        log.info("Fetching all booked tickets");
         return bookTicketRepository.findAll();
     }
 
     @Override
     public List<BookTicket> getTicketsBookedByGuest(String guestEmail) {
+        log.info("Fetching ticket booked by guest: {}", guestEmail);
         var findGuest = guestService.getGuestByEmail(guestEmail)
-                .orElseThrow(() -> new RecordNotFoundException(
+                .orElseThrow(() -> {log.error("Guest not found: {}", guestEmail);
+                        return new RecordNotFoundException(
                         new ErrorResponse(GUEST_NOT_FOUND.getMessage(), ErrorCode.RSC01)
-                ));
+                );});
 
         return bookTicketRepository.findByGuest(findGuest);
     }
 
     @Override
     public Optional<BookTicket> getTicketByTicketId(String ticketId) {
+        log.info("Fetching ticket by ticket id: {}", ticketId);
         return bookTicketRepository.findByTicketId(ticketId);
     }
 }
