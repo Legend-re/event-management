@@ -1,5 +1,6 @@
 package org.legendre.eventmanagement.host.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.legendre.eventmanagement.host.model.Host;
 import org.legendre.eventmanagement.host.model.HostRequest;
@@ -21,7 +22,7 @@ public class HostRestController {
     private final HostService hostService;
 
     @PostMapping(CREATE_PATH)
-    private ResponseEntity<Host> createHost(@RequestBody HostRequest request) {
+    private ResponseEntity<Host> createHost(@RequestBody @Valid HostRequest request) {
         return new ResponseEntity<>(hostService.createHost(request), HttpStatus.OK);
     }
 
@@ -36,7 +37,7 @@ public class HostRestController {
     }
 
     @PutMapping(UPDATE_PATH)
-    private ResponseEntity<Host> updateHost(@RequestBody HostRequest request, @RequestParam String email) {
+    private ResponseEntity<Host> updateHost(@RequestBody @Valid HostRequest request, @RequestParam String email) {
         return new ResponseEntity<>(hostService.updateHost(request, email), HttpStatus.OK);
     }
 

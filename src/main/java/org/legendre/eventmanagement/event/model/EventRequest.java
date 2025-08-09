@@ -1,12 +1,12 @@
 package org.legendre.eventmanagement.event.model;
 
-import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
-@Data
-public class EventRequest {
-    private String name;
-    private String location;
-    private LocalDateTime date;
-    private String hostName;
+public record EventRequest(
+        @NotBlank(message = "name is required") String name,
+        @NotBlank(message = "name is required") String location,
+        @NotBlank(message = "date is required") LocalDateTime date,
+        @NotBlank(message = "hostName is required") String hostName
+){
 }

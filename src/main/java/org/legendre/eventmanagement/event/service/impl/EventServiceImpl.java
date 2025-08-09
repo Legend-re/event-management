@@ -29,20 +29,20 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event createEvent(EventRequest request) {
-        log.info("creating an event for host: {}", request.getHostName());
-        var findHost = hostService.getHostByName(request.getHostName())
+        log.info("creating an event for host: {}", request.hostName());
+        var findHost = hostService.getHostByName(request.hostName())
                 .orElseThrow(() -> {
-                    log.error("Host not found: {}", request.getHostName());
+                    log.error("Host not found: {}", request.hostName());
                     return new RecordNotFoundException(
                             new ErrorResponse(HOST_NOT_FOUND.getMessage(), ErrorCode.RSC01)
                     );
                 });
 
         var savedEvent = eventRepository.save(Event.builder()
-                .name(request.getName())
-                .location(request.getLocation())
+                .name(request.name())
+                .location(request.location())
                 .host(findHost.getName())
-                .date(request.getDate())
+                .date(request.date())
                 .build());
 
         log.info("Event created successfully: {}", savedEvent.getName());
@@ -76,9 +76,9 @@ public class EventServiceImpl implements EventService {
                 );}
         );
 
-        eventRepository.findByName(request.getName())
+        eventRepository.findByName(request.name())
                 .ifPresent(event -> {
-                    log.error("Event already exist: {}", request.getName());
+                    log.error("Event already exist: {}", request.name());
                     throw new DuplicateRecordException(
                             new ErrorResponse(EVENT_ALREADY_EXIST.getMessage(), ErrorCode.RSC02)
                     );
@@ -86,9 +86,9 @@ public class EventServiceImpl implements EventService {
 
         Event updatedEvent = eventRepository.save(
                 findEvent.toBuilder()
-                        .name(request.getName())
-                        .location(request.getLocation())
-                        .date(request.getDate())
+                        .name(request.name())
+                        .location(request.location())
+                        .date(request.date())
                         .build()
         );
 

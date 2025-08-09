@@ -1,5 +1,6 @@
 package org.legendre.eventmanagement.guest.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.legendre.eventmanagement.guest.model.Guest;
 import org.legendre.eventmanagement.guest.model.GuestRequest;
@@ -21,7 +22,7 @@ public class GuestRestController {
     private final GuestService guestService;
 
     @PostMapping(CREATE_PATH)
-    private ResponseEntity<Guest> createGuest(@RequestBody GuestRequest request) {
+    private ResponseEntity<Guest> createGuest(@RequestBody @Valid GuestRequest request) {
         return new ResponseEntity<>(guestService.createGuest(request), HttpStatus.CREATED);
     }
 
@@ -36,7 +37,7 @@ public class GuestRestController {
     }
 
     @PutMapping(UPDATE_PATH)
-    private ResponseEntity<Guest> updateGuest(@RequestBody GuestRequest request, @RequestParam String email) {
+    private ResponseEntity<Guest> updateGuest(@RequestBody @Valid GuestRequest request, @RequestParam String email) {
         return new ResponseEntity<>(guestService.updateGuest(request, email), HttpStatus.OK);
     }
 

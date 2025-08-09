@@ -1,9 +1,9 @@
 package org.legendre.eventmanagement.ticket.model;
 
-import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
 
-@Data
-public class BookTicketRequest {
-    private String guestEmail;
-    private String eventName;
+public record BookTicketRequest(
+        @NotBlank(message = "guestEmail is required") String guestEmail,
+        @NotBlank(message = "eventName is required") String eventName
+) {
 }

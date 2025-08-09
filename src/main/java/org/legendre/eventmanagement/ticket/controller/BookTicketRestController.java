@@ -1,5 +1,6 @@
 package org.legendre.eventmanagement.ticket.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.legendre.eventmanagement.ticket.model.BookTicket;
 import org.legendre.eventmanagement.ticket.model.BookTicketRequest;
@@ -21,7 +22,7 @@ public class BookTicketRestController {
     private final BookTicketService bookTicketService;
 
     @PostMapping(CREATE_PATH)
-    private ResponseEntity<BookTicket> bookTicket(@RequestBody BookTicketRequest request) {
+    private ResponseEntity<BookTicket> bookTicket(@RequestBody @Valid BookTicketRequest request) {
         return new ResponseEntity<>(bookTicketService.bookTicket(request), HttpStatus.OK);
     }
 
