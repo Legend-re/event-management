@@ -1,5 +1,6 @@
 package org.legendre.eventmanagement.ticket.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.legendre.eventmanagement.ticket.model.Ticket;
 import org.legendre.eventmanagement.ticket.model.TicketRequest;
@@ -21,7 +22,7 @@ public class TicketRestController {
     private final TicketService ticketService;
 
     @PostMapping(CREATE_PATH)
-    private ResponseEntity<Ticket> createHost(@RequestBody TicketRequest request) {
+    private ResponseEntity<Ticket> createHost(@RequestBody @Valid TicketRequest request) {
         return new ResponseEntity<>(ticketService.createTicket(request), HttpStatus.CREATED);
     }
 
@@ -36,7 +37,7 @@ public class TicketRestController {
     }
 
     @PutMapping(UPDATE_PATH)
-    private ResponseEntity<Ticket> updateTicket(@RequestBody TicketRequest request) {
+    private ResponseEntity<Ticket> updateTicket(@RequestBody @Valid TicketRequest request) {
         return new ResponseEntity<>(ticketService.updateTicket(request), HttpStatus.OK);
     }
 

@@ -1,5 +1,6 @@
 package org.legendre.eventmanagement.event.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.legendre.eventmanagement.event.model.Event;
 import org.legendre.eventmanagement.event.model.EventRequest;
@@ -21,7 +22,7 @@ public class EventRestController {
     private final EventService eventService;
 
     @PostMapping(CREATE_PATH)
-    private ResponseEntity<Event> createEvent(@RequestBody EventRequest request) {
+    private ResponseEntity<Event> createEvent(@RequestBody @Valid EventRequest request) {
         return new ResponseEntity<>(eventService.createEvent(request), HttpStatus.CREATED);
     }
 
@@ -36,7 +37,7 @@ public class EventRestController {
     }
 
     @PutMapping(UPDATE_PATH)
-    private ResponseEntity<Event> updateEvent(@RequestBody EventRequest request, @RequestParam String name) {
+    private ResponseEntity<Event> updateEvent(@RequestBody @Valid EventRequest request, @RequestParam String name) {
         return new ResponseEntity<>(eventService.updateEvent(request, name), HttpStatus.OK);
     }
 

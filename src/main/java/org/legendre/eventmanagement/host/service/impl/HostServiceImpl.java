@@ -27,9 +27,9 @@ public class HostServiceImpl implements HostService {
 
     @Override
     public Host createHost(HostRequest request) {
-        log.info("creating a host: {}", request.getEmail());
-        hostRepository.findByEmail(request.getEmail())
-                .ifPresent(host -> {log.error("Host already exist: {}", request.getEmail());
+        log.info("creating a host: {}", request.email());
+        hostRepository.findByEmail(request.email())
+                .ifPresent(host -> {log.error("Host already exist: {}", request.email());
                     throw new DuplicateRecordException(
                             new ErrorResponse(HOST_ALREADY_EXIST.getMessage(), ErrorCode.RSC02)
                     );
@@ -37,9 +37,9 @@ public class HostServiceImpl implements HostService {
 
         var savedHost = hostRepository.save(
                 Host.builder()
-                        .email(request.getEmail())
-                        .name(request.getName())
-                        .bio(request.getBio())
+                        .email(request.email())
+                        .name(request.name())
+                        .bio(request.bio())
                         .build());
         log.info("guest created successfully: {}", savedHost.getName());
         return savedHost;
@@ -70,17 +70,17 @@ public class HostServiceImpl implements HostService {
                                return new RecordNotFoundException(
                                 new ErrorResponse(HOST_NOT_FOUND.getMessage(), ErrorCode.RSC01));}
                 );
-        hostRepository.findByEmail(request.getEmail())
-                .ifPresent(host -> {log.error("Host already exist: {}", request.getEmail());
+        hostRepository.findByEmail(request.email())
+                .ifPresent(host -> {log.error("Host already exist: {}", request.email());
                     throw new DuplicateRecordException(
                             new ErrorResponse(HOST_ALREADY_EXIST.getMessage(), ErrorCode.RSC02));
                 });
 
         Host savedHost = hostRepository.save(
                 findHost.toBuilder()
-                        .name(request.getName())
-                        .email(request.getEmail())
-                        .bio(request.getBio()).build());
+                        .name(request.name())
+                        .email(request.email())
+                        .bio(request.bio()).build());
         log.info("Host created successfully: {}", savedHost.getName());
         return savedHost;
     }

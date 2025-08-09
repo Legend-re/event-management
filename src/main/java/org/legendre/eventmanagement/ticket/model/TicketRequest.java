@@ -1,9 +1,11 @@
 package org.legendre.eventmanagement.ticket.model;
 
-import lombok.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-@Data
-public class TicketRequest {
-    private int totalTickets;
-    private String eventName;
+public record TicketRequest(
+        @NotNull(message = "totalTickets is required") Integer totalTickets,
+
+        @NotBlank(message = "eventName is required") String eventName
+) {
 }

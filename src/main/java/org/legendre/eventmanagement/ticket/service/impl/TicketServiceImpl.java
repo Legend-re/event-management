@@ -28,18 +28,18 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public Ticket createTicket(TicketRequest request) {
-        log.info("Creating ticket: {}", request.getEventName());
-        var findEvent = eventService.getEventByName(request.getEventName())
-                .orElseThrow(() -> {log.error("Guest not found: {}", request.getEventName());
+        log.info("Creating ticket: {}", request.eventName());
+        var findEvent = eventService.getEventByName(request.eventName())
+                .orElseThrow(() -> {log.error("Guest not found: {}", request.eventName());
                         return new RecordNotFoundException(
                         new ErrorResponse(EVENT_NOT_FOUND.getMessage(), ErrorCode.RSC01)
                 );});
 
         var savedTicket = ticketRepository.save(Ticket.builder()
                 .eventName(findEvent.getName())
-                .totalTickets(request.getTotalTickets())
+                .totalTickets(request.totalTickets())
                 .totalTicketsSold(0)
-                .ticketsLeft(request.getTotalTickets()).build());
+                .ticketsLeft(request.totalTickets()).build());
         log.info("Ticket created successfully: {}", savedTicket.getTicketsLeft());
         return savedTicket;
     }
@@ -63,20 +63,20 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public Ticket updateTicket(TicketRequest request) {
-        log.info("Updating ticket: {}", request.getEventName());
-        var findTicket = ticketRepository.findByEventName(request.getEventName())
-                .orElseThrow(() -> {log.error("Ticket not found: {}", request.getEventName());
+        log.info("Updating ticket: {}", request.eventName());
+        var findTicket = ticketRepository.findByEventName(request.eventName())
+                .orElseThrow(() -> {log.error("Ticket not found: {}", request.eventName());
                         return new RecordNotFoundException(
                         new ErrorResponse(TICKET_NOT_FOUND.getMessage(), ErrorCode.RSC01));}
                 );
 
-        findTicket.setEventName(request.getEventName());
-        findTicket.setTotalTickets(request.getTotalTickets());
+        findTicket.setEventName(request.eventName());
+        findTicket.setTotalTickets(request.totalTickets());
 
         Ticket updatedTicket = ticketRepository.save(
                 findTicket.toBuilder()
-                        .totalTickets(findTicket.getTotalTickets() + request.getTotalTickets())
-                        .ticketsLeft(findTicket.getTicketsLeft() + request.getTotalTickets()).build());
+                        .totalTickets(findTicket.getTotalTickets() + request.totalTickets())
+                        .ticketsLeft(findTicket.getTicketsLeft() + request.totalTickets()).build());
         log.info("Ticket updated successfully: {}", updatedTicket.getTicketsLeft());
         return updatedTicket;
     }

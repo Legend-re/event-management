@@ -26,19 +26,19 @@ public class GuestServiceImpl implements GuestService {
 
     @Override
     public Guest createGuest(GuestRequest request) {
-        log.info("creating a guest: {}", request.getEmailAddress());
-        guestRepository.findByEmailAddress(request.getEmailAddress())
-                .ifPresent(guest -> {log.error("Guest already exist: {}", request.getEmailAddress());
+        log.info("creating a guest: {}", request.emailAddress());
+        guestRepository.findByEmailAddress(request.emailAddress())
+                .ifPresent(guest -> {log.error("Guest already exist: {}", request.emailAddress());
                     throw new DuplicateRecordException(
                             new ErrorResponse(GUEST_ALREADY_EXIST.getMessage(), ErrorCode.RSC02));
                 });
 
         var savedGuest = guestRepository.save(
                 Guest.builder()
-                        .firstName(request.getFirstName())
-                        .lastName(request.getLastName())
-                        .emailAddress(request.getEmailAddress())
-                        .phoneNumber(request.getPhoneNumber()).build());
+                        .firstName(request.firstName())
+                        .lastName(request.lastName())
+                        .emailAddress(request.emailAddress())
+                        .phoneNumber(request.phoneNumber()).build());
         log.info("Guest created successfully: {}", savedGuest.getFirstName());
         return savedGuest;
     }
@@ -68,7 +68,7 @@ public class GuestServiceImpl implements GuestService {
                         new ErrorResponse(GUEST_NOT_FOUND.getMessage(), ErrorCode.RSC01));}
                 );
 
-        guestRepository.findByEmailAddress(request.getEmailAddress())
+        guestRepository.findByEmailAddress(request.emailAddress())
                 .ifPresent(guest -> {
                     throw new DuplicateRecordException(
                             new ErrorResponse(GUEST_ALREADY_EXIST.getMessage(), ErrorCode.RSC02));
@@ -77,10 +77,10 @@ public class GuestServiceImpl implements GuestService {
         assert findGuest != null;
         Guest savedGuest = guestRepository.save(
                 findGuest.toBuilder()
-                        .firstName(request.getFirstName())
-                        .lastName(request.getLastName())
-                        .emailAddress(request.getEmailAddress())
-                        .phoneNumber(request.getPhoneNumber()).build());
+                        .firstName(request.firstName())
+                        .lastName(request.lastName())
+                        .emailAddress(request.emailAddress())
+                        .phoneNumber(request.phoneNumber()).build());
         log.info("Guest updated successfully: {}", savedGuest.getFirstName());
         return savedGuest;
     }

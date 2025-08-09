@@ -46,17 +46,17 @@ public class BookTicketServiceImpl implements BookTicketService {
 
     @Override
     public BookTicket bookTicket(BookTicketRequest request) {
-        log.info("Booking ticket: {}", request.getGuestEmail());
+        log.info("Booking ticket: {}", request.guestEmail());
         var ticketId = generateTicketId();
 
-        var findGuest = guestService.getGuestByEmail(request.getGuestEmail())
-                .orElseThrow(() -> {log.error("Guest not found: {}", request.getGuestEmail());
+        var findGuest = guestService.getGuestByEmail(request.guestEmail())
+                .orElseThrow(() -> {log.error("Guest not found: {}", request.guestEmail());
                         return new RecordNotFoundException(
                         new ErrorResponse(GUEST_NOT_FOUND.getMessage(), ErrorCode.RSC01));}
                 );
 
-        var findTicketByEventName = ticketService.getTicketByEventName(request.getEventName())
-                .orElseThrow(() -> {log.error("Ticket not found: {}", request.getEventName());
+        var findTicketByEventName = ticketService.getTicketByEventName(request.eventName())
+                .orElseThrow(() -> {log.error("Ticket not found: {}", request.eventName());
                         return new RecordNotFoundException(
                                 new ErrorResponse(TICKET_NOT_FOUND.getMessage(), ErrorCode.RSC01)
                         );}
@@ -67,8 +67,8 @@ public class BookTicketServiceImpl implements BookTicketService {
                     new ErrorResponse(TICKET_SOLD_OUT.getMessage(), ErrorCode.RSC01)
             );
 
-        var findEvent = eventService.getEventByName(request.getEventName())
-                .orElseThrow(() -> {log.error("Event not found: {}", request.getEventName());
+        var findEvent = eventService.getEventByName(request.eventName())
+                .orElseThrow(() -> {log.error("Event not found: {}", request.eventName());
                         return new RecordNotFoundException(
                         new ErrorResponse(EVENT_NOT_FOUND.getMessage(), ErrorCode.RSC01));});
 
