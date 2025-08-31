@@ -22,7 +22,7 @@ public class TicketRestController {
     private final TicketService ticketService;
 
     @PostMapping(CREATE_PATH)
-    private ResponseEntity<Ticket> createHost(@RequestBody @Valid TicketRequest request) {
+    private ResponseEntity<Ticket> createTicket(@RequestBody @Valid TicketRequest request) {
         return new ResponseEntity<>(ticketService.createTicket(request), HttpStatus.CREATED);
     }
 
