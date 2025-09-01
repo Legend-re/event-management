@@ -22,7 +22,7 @@ public class EventRestController {
     private final EventService eventService;
 
     @PostMapping(CREATE_PATH)
-    private ResponseEntity<Event> createEvent(@RequestBody @Valid EventRequest request) {
+    private ResponseEntity<Event> createEvent(@ModelAttribute @Valid EventRequest request) {
         return new ResponseEntity<>(eventService.createEvent(request), HttpStatus.CREATED);
     }
 
