@@ -2,6 +2,7 @@ package org.legendre.eventmanagement.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
@@ -25,8 +26,8 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(
                 requests -> requests
-                        .requestMatchers("/api/v1/ent-mng/book-ticket/**","/api/v1/ent-mng/guest/**").permitAll()
-                        .requestMatchers("/api/v1/ent-mng/event/**","/api/v1/ent-mng/host/**", "/api/v1/ent-mng/ticket/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/ent-mng/book-ticket/**").permitAll()
+                        .requestMatchers("/api/v1/ent-mng/event/**","/api/v1/ent-mng/host/**", "/api/v1/ent-mng/guest/**", "/api/v1/ent-mng/ticket/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
                 .build();
