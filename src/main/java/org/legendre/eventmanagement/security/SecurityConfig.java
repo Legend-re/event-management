@@ -1,58 +1,68 @@
 package org.legendre.eventmanagement.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-
-import java.util.List;
-
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final UserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .authorizeHttpRequests(
-                requests -> requests
-                        .requestMatchers("/api/v1/ent-mng/book-ticket/**").permitAll()
-                        .requestMatchers("/api/v1/ent-mng/event/**","/api/v1/ent-mng/host/**", "/api/v1/ent-mng/guest/**", "/api/v1/ent-mng/ticket/**").hasRole("ADMIN")
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/v1/ent-mng/book-ticket/**",
+                                "/api/v1/ent-mng/sign-up/**",
+                                "/api/v1/ent-mng/get-users/**",
+                                "/api/v1/ent-mng/change-password/**").permitAll()
+                        .requestMatchers("/api/v1/ent-mng/event/**",
+                                "/api/v1/ent-mng/host/**",
+                                "/api/v1/ent-mng/guest/**",
+                                "/api/v1/ent-mng/ticket/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
-                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
+                .httpBasic(Customizer.withDefaults())
+                .sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
-
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user1 = User
-                .withUsername("maryam")
-                .password(passwordEncoder().encode("password1234"))
-                .roles("USER")
-                .build();
-        UserDetails admin = User
-                .withUsername("legendre")
-                .password(passwordEncoder().encode("password123456"))
-                .roles("ADMIN")
-                .build();
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        UserDetails admin = User
+//                .withUsername("legendre")
+//               .password(passwordEncoder().encode("password123456"))
+//                .roles("ADMIN")
+//                .build();
+//    return new InMemoryUserDetailsManager(admin);
+//    }
+// Finally the reason behind the circular error was because the UserServiceImpl class needs the SecurityConfig class and the other way round
+// So I was forced to create an new service class MyUserDetailsService to implement the loadUserByusername method
+// Then I had to inject UserDetailsService and not MyUserDetailsService as I did before with UserServiceImpl
 
-    return new InMemoryUserDetailsManager(user1, admin);
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }

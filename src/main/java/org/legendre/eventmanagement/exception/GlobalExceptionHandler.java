@@ -41,6 +41,18 @@ public class GlobalExceptionHandler {
 
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ValidationException.class)
+    public ErrorResponse handleValidationException(ValidationException exception) {
+        log.error("Validation Exception occurred: {}", exception.getMessage());
+
+        return (exception.getErrorResponse() != null) ?
+                exception.getErrorResponse() :
+                new ErrorResponse(RECORD_ALREADY_EXIST.getMessage(), ErrorCode.RSC02);
+    }
+
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         log.error("MethodArgumentNotValidException occurred: {}", exception.getMessage());
