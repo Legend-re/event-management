@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.legendre.eventmanagement.user.model.User;
 import org.legendre.eventmanagement.user.model.requests.ChangePasswordRequest;
+import org.legendre.eventmanagement.user.model.requests.LoginRequest;
 import org.legendre.eventmanagement.user.model.requests.SignUpRequest;
 import org.legendre.eventmanagement.user.model.response.UserResponse;
 import org.legendre.eventmanagement.user.service.UserService;
@@ -28,12 +29,17 @@ public class UserRestController {
         return new ResponseEntity<>(userService.signUp(request), HttpStatus.CREATED);
     }
 
+    @PostMapping(LOGIN)
+    private ResponseEntity<?> login(@RequestBody @Valid LoginRequest request) {
+        return new ResponseEntity<>(userService.login(request), HttpStatus.OK);
+    }
+
     @GetMapping(GET_PATH)
     private ResponseEntity<?> getUser(@PathVariable(GET_BY_NAME_PATH_VARIABLE) String username) {
         return new ResponseEntity<>(userService.getUserByUsername(username), HttpStatus.OK);
     }
 
-    @GetMapping("/get-users")
+    @GetMapping(GET_USERS)
     private ResponseEntity<List<UserResponse>> getUsers() {
         return new ResponseEntity<>(userService.getAll(), HttpStatus.OK);
     }

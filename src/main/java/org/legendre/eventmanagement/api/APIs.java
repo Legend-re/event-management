@@ -11,7 +11,9 @@ public interface APIs {
     String BOOK_TICKET_URL = "/api/v1/ent-mng/book-ticket";
 
     //paths
+    String GET_USERS = "/get-users";
     String SIGNUP_PATH = "/sign-up";
+    String LOGIN = "/login";
     String CHANGE_PASSWORD_PATH = "/change-password";
     String CREATE_PATH = "/create";
     String UPDATE_PATH = "/update";
