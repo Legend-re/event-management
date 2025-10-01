@@ -19,7 +19,7 @@ import java.util.function.Function;
 public class JWTService {
 
     @Value("${app.jwt.secret-key}")
-    private String SECRET_KEY;
+    private String secretKey;
 
 //    private String generateSecret() {
 //        String encodedKey = "";
@@ -34,7 +34,7 @@ public class JWTService {
 //    }
 
     private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
