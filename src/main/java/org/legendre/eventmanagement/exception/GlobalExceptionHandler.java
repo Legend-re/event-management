@@ -1,15 +1,15 @@
 package org.legendre.eventmanagement.exception;
 
+import io.jsonwebtoken.security.SignatureException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import java.util.Arrays;
 
 import static org.legendre.eventmanagement.exception.ErrorMessages.*;
 
@@ -49,7 +49,6 @@ public class GlobalExceptionHandler {
                 exception.getErrorResponse() :
                 new ErrorResponse(RECORD_ALREADY_EXIST.getMessage(), ErrorCode.RSC02);
     }
-
 
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)

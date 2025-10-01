@@ -1,8 +1,11 @@
 package org.legendre.eventmanagement.user.service;
 
+import jakarta.validation.Valid;
 import org.legendre.eventmanagement.user.model.User;
 import org.legendre.eventmanagement.user.model.requests.ChangePasswordRequest;
+import org.legendre.eventmanagement.user.model.requests.LoginRequest;
 import org.legendre.eventmanagement.user.model.requests.SignUpRequest;
+import org.legendre.eventmanagement.user.model.response.LoginResponse;
 import org.legendre.eventmanagement.user.model.response.UserResponse;
 
 import java.util.List;
@@ -18,4 +21,6 @@ public interface UserService {
     void changePassword(ChangePasswordRequest request);
 
     void deleteUser(String username);
+
+    LoginResponse login(LoginRequest request);
 }

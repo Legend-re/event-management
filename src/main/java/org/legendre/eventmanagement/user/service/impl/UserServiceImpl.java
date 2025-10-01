@@ -3,15 +3,22 @@ package org.legendre.eventmanagement.user.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.legendre.eventmanagement.exception.*;
+import org.legendre.eventmanagement.security.JWTService;
 import org.legendre.eventmanagement.user.model.User;
 import org.legendre.eventmanagement.user.model.repository.UserRepository;
 import org.legendre.eventmanagement.user.model.requests.ChangePasswordRequest;
+import org.legendre.eventmanagement.user.model.requests.LoginRequest;
 import org.legendre.eventmanagement.user.model.requests.SignUpRequest;
+import org.legendre.eventmanagement.user.model.response.LoginResponse;
 import org.legendre.eventmanagement.user.model.response.UserResponse;
 import org.legendre.eventmanagement.user.service.UserService;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +31,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JWTService jwtService;
 
     @Override
     public UserResponse signUp(SignUpRequest request) {
@@ -68,7 +77,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> {
                             log.error("User not found: {}", username);
                             return new RecordNotFoundException(
-                                    new ErrorResponse(HOST_NOT_FOUND.getMessage(), ErrorCode.RSC01));
+                                    new ErrorResponse(USER_NOT_FOUND.getMessage(), ErrorCode.RSC01));
                         }
                 ));
         return getUser.map(User::toResponse).get();
@@ -122,5 +131,21 @@ public class UserServiceImpl implements UserService {
         log.info("Deleting user: {}", username);
         userRepository.findByUsername(username).ifPresent(userRepository::delete);
         log.info("User deleted successfully: {}", username);
+    }
+
+    @Override
+    public LoginResponse login(LoginRequest request) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.username(), request.password()));
+
+        String username = getUserByUsername(request.username()).username();
+
+        Optional.of(request)
+                .filter(authenticate -> authentication.isAuthenticated())
+                .orElseThrow(() -> new ValidationException(
+                        new ErrorResponse("Your password is incorrect ", ErrorCode.RSC01)));
+
+        String token = jwtService.generateToken(request.username());
+        return new LoginResponse(username, token, jwtService.extractExpiration(token));
     }
 }
