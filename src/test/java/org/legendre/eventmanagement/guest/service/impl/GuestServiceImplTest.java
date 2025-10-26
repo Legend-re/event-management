@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -82,19 +83,121 @@ class GuestServiceImplTest {
 
     @Nested
     class updateGuest {
-        //for update guest 3 cases
-        //success
-        //if search email does not exist(String)
-        //if email you're changing to already exists(email address within request)
+
+        @Test
+        void testUpdateGuest_success() {
+            // Given
+            var existingEmail = "Mariamj@gmail.com";
+            var request = new GuestRequest("Dammy", "Ayo", "08012345678", "Dammyayo@gmail.com");
+            var existingGuest = Guest.builder()
+                    .firstName("Mariam")
+                    .lastName("J")
+                    .emailAddress(existingEmail)
+                    .phoneNumber("09011112222")
+                    .build();
+
+            // When-Then
+            when(guestRepository.findByEmailAddress(existingEmail))
+                    .thenReturn(Optional.of(existingGuest));
+            when(guestRepository.findByEmailAddress(request.emailAddress()))
+                    .thenReturn(Optional.empty());
+            when(guestRepository.save(any(Guest.class)))
+                    .thenReturn(existingGuest.toBuilder()
+                            .firstName(request.firstName())
+                            .lastName(request.lastName())
+                            .emailAddress(request.emailAddress())
+                            .phoneNumber(request.phoneNumber())
+                            .build());
+
+            var response = guestService.updateGuest(request, existingEmail);
+
+            // Verify / Assert
+            assertEquals(request.firstName(), response.getFirstName());
+            assertEquals(request.lastName(), response.getLastName());
+            assertEquals(request.emailAddress(), response.getEmailAddress());
+            assertEquals(request.phoneNumber(), response.getPhoneNumber());
+            verify(guestRepository, times(1)).save(any(Guest.class));
+        }
+
+        @Test
+        void testUpdateGuest_throwDuplicateRecordIfNewEmailAlreadyExists() {
+            // Given
+            var existingEmail = "Mariamj@gmail.com.com";
+            var request = new GuestRequest("Dammy", "Ayo", "08012345678", "Dammyayo@gmail.com");
+            var existingGuest = Guest.builder()
+                    .firstName("Mariam")
+                    .lastName("J")
+                    .emailAddress(existingEmail)
+                    .phoneNumber("09011112222")
+                    .build();
+            var duplicateGuest = Guest.builder()
+                    .firstName("Jane")
+                    .lastName("Smith")
+                    .emailAddress(request.emailAddress())
+                    .phoneNumber("08123456789")
+                    .build();
+
+            // When-Then
+            when(guestRepository.findByEmailAddress(existingEmail))
+                    .thenReturn(Optional.of(existingGuest));
+            when(guestRepository.findByEmailAddress(request.emailAddress()))
+                    .thenReturn(Optional.of(duplicateGuest));
+
+            var exception = assertThrows(DuplicateRecordException.class,
+                    () -> guestService.updateGuest(request, existingEmail));
+
+            // Verify / Assert
+            assertEquals("Guest already exist", exception.getErrorResponse().getMessage());
+            assertEquals("02", exception.getErrorResponse().getCode());
+            verify(guestRepository, times(0)).save(any(Guest.class));
+        }
     }
 
     @Nested
     class getGuest {
-        //for get guests(get and get all) 3 cases
-        // get single success
-        // if email to be gotten does not exist
-        // get all
+
+        @Test
+        void testGetGuestByEmail_success() {
+            // Given
+            var email = "Gbemi@gmail.com";
+            var guest = Guest.builder()
+                    .firstName("Gbemi")
+                    .lastName("Akin")
+                    .emailAddress(email)
+                    .phoneNumber("08011112222")
+                    .build();
+
+            // When-Then
+            when(guestRepository.findByEmailAddress(email))
+                    .thenReturn(Optional.of(guest));
+
+            var result = guestService.getGuestByEmail(email);
+
+            // Verify / Assert
+            assertEquals(guest.getEmailAddress(), result.get().getEmailAddress());
+            assertEquals(guest.getFirstName(), result.get().getFirstName());
+            verify(guestRepository, times(1)).findByEmailAddress(email);
+        }
+
+        @Test
+        void testGetAllGuests_success() {
+            // Given
+            var guestList = List.of(
+                    Guest.builder().firstName("Dammy").lastName("Ayo").emailAddress("Dammyayo@gmail.com").build(),
+                    Guest.builder().firstName("Mariam").lastName("J").emailAddress("Mariamj@gmail.com").build()
+            );
+
+            // When-Then
+            when(guestRepository.findAll()).thenReturn(guestList);
+
+            var result = guestService.getAll();
+
+            // Verify / Assert
+            assertEquals(2, result.size());
+            verify(guestRepository, times(1)).findAll();
+        }
     }
+
 
     @Nested
     class deleteGuest {

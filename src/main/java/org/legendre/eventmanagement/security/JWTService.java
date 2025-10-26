@@ -85,7 +85,7 @@ public class JWTService {
 //    }
 
     public boolean isTokenValid(String token, UserDetails userDetails){
-        String username = extractClaims(token, Claims::getSubject);
+        String username = extractUsername(token);
         return username.equalsIgnoreCase(userDetails.getUsername()) && !isTokenExpired(token);
 
     }
